@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chatbot Savee IA</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="chat-container" class="hidden">
+        <div id="chatbox"></div>
+        <form id="inputForm">
+            <input id="messageInput" autocomplete="off" placeholder="Votre question..." />
+            <button type="submit">Envoyer</button>
+        </form>
+        <button id="closeChat" title="Fermer">×</button>
+    </div>
+    <button id="openChat" title="Ouvrir le chat">💬</button>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const chatbox = document.getElementById('chatbox');
+        const form = document.getElementById('inputForm');
+        const input = document.getElementById('messageInput');
+        const openChatBtn = document.getElementById('openChat');
+        const closeChatBtn = document.getElementById('closeChat');
+
+        openChatBtn.addEventListener('click', () => {
+            chatContainer.classList.remove('hidden');
+            openChatBtn.style.display = 'none';
+            input.focus();
+        });
+
+        closeChatBtn.addEventListener('click', () => {
+            chatContainer.classList.add('hidden');
+            openChatBtn.style.display = 'block';
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = input.value.trim();
+            if (!message) return;
+
+            appendMessage(message, 'userMsg');
+            input.value = '';
+            appendMessage('...', 'botMsg');  // Message d'attente
+
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await res.json();
+                removeLastBotMessage();
+                appendMessage(data.response || 'Erreur de réponse.', 'botMsg');
+            } catch {
+                removeLastBotMessage();
+                appendMessage('Erreur de communication avec le serveur.', 'botMsg');
+            }
+        });
+
+        function appendMessage(text, className) {
+            const div = document.createElement('div');
+            div.className = className;
+            div.textContent = text;
+            chatbox.appendChild(div);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function removeLastBotMessage() {
+            const msgs = chatbox.getElementsByClassName('botMsg');
+            if (msgs.length > 0) {
+                chatbox.removeChild(msgs[msgs.length - 1]);
+            }
+        }
+    </script>
+</body>
+</html>
