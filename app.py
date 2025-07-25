@@ -1,8 +1,8 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template
 import subprocess
 import os
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False  # Pour bien gérer les accents dans JSON
 
 def query_ollama(prompt):
@@ -30,13 +30,10 @@ def chat():
         return jsonify({'response': f"Erreur IA, veuillez réessayer. Détails: {error}"})
     return jsonify({'response': response or "Pas de réponse."})
 
-@app.route('/style.css')
-def serve_css():
-    return send_from_directory('.', 'style.css')
-
 @app.route('/')
 def index():
     return render_template('chat.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
