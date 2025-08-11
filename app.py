@@ -18,7 +18,7 @@ HEADERS = {
 def query_openrouter(prompt):
     try:
         payload = {
-            "model": "mistralai/mistral-small",
+            "model": "openai/gpt-3.5-turbo",
             "messages": [
                 {"role": "system", "content": "Tu es un assistant qui aide les employés à comprendre les données de consommation d'électricité et de gaz dans l'application Savee."},
                 {"role": "user", "content": prompt}
