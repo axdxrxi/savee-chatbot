@@ -6,7 +6,7 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['JSON_AS_ASCII'] = False
 
 # ==== Remplace par ta clé OpenRouter (sk-or-...) ====
-MISTRAL_API_KEY = "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"
+MISTRAL_API_KEY = "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"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 HEADERS = {
